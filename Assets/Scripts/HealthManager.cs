@@ -6,30 +6,22 @@ using UnityEngine.UI;
 public class HealthManager : MonoBehaviour {
 
     public int currentHealth, maximumHealth;
-    public PlayerController thePlayer;
-    public float invincibilityLength;
-    private float invincibilityCounter;
 
-    public Renderer playerRenderer;
-    private float flashCounter;
-    public float flashLength = 0.1f;
+    public float invincibilityLength, waitForFade, fadeSpeed, respawnLength, flashLength = 0.1f;
+    private float invincibilityCounter, flashCounter;
 
-    private bool isRespawning;
+    private bool isRespawning, isFadeToBlack, isFadeFromBlack;
+
     private Vector3 respawnPoint;
 
-    public float respawnLength;
     public GameObject deathEffect;
     public Image blackScreen;
-    private bool isFadeToBlack;
-    private bool isFadeFromBlack;
-    public float fadeSpeed;
-    public float waitForFade;
+    public PlayerController thePlayer;
+    public Renderer playerRenderer;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         currentHealth = maximumHealth;
-
-        //thePlayer = FindObjectOfType<PlayerController>();
 
         respawnPoint = thePlayer.transform.position;
 	}
@@ -47,7 +39,7 @@ public class HealthManager : MonoBehaviour {
                 flashCounter = flashLength;
             }
 
-            if(invincibilityCounter <-0)
+            if(invincibilityCounter <=0)
             {
                 playerRenderer.enabled = true;
             }
@@ -70,7 +62,6 @@ public class HealthManager : MonoBehaviour {
                 isFadeFromBlack = false;
             }
         }
-
     }
 
     public void HurtPlayer(int damage, Vector3 direction)
@@ -78,6 +69,7 @@ public class HealthManager : MonoBehaviour {
         if (invincibilityCounter <= 0)
         {
             currentHealth -= damage;
+
             if (currentHealth <= 0)
             {
                 Respawn();
@@ -96,8 +88,6 @@ public class HealthManager : MonoBehaviour {
 
     public void Respawn()
     {
-        //thePlayer.transform.position = respawnPoint;
-        //currentHealth = maximumHealth;
         if (!isRespawning)
         {
             StartCoroutine("RespawnCo");
